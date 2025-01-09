@@ -311,15 +311,19 @@ def home_page():
                 with gr.Column(min_width=0, scale=1): pass
 
             with gr.Row(visible=False) as api_endpoint_selection_page:
-                with gr.Column(min_width=0): pass
-                with gr.Column(visible=True):
+                with gr.Column(min_width=0, scale=1): pass
+                with gr.Column(visible=True, scale=5):
                     gr.HTML("<h2> Select the endpoints to generate API Tests </h2>")
-                    all_endpoints = gr.Dropdown("", multiselect=True)
-                    api_test_framework = gr.Dropdown(label="Framework", choices=["Python Pytest", "Python Robot", "Karate", "Cypress", "K6", "Test NG"], elem_classes='custom-dropdown')
-                    model_structure_final = gr.Json(visible=False) 
-                    swagger_result = gr.Json(visible=False)
-                    swagger_json = gr.Json(visible=False)
-                    api_additional_inputs = gr.Textbox(label="Additional Inputs: ", lines=3, elem_classes="custom-textbox")
+                    with gr.Row():
+                        with gr.Column(min_width=0, scale=1): pass
+                        with gr.Column(min_width=0, scale=18):
+                            all_endpoints = gr.Dropdown("", multiselect=True)
+                            api_test_framework = gr.Dropdown(label="Framework", choices=["Python Pytest", "Python Robot", "Karate", "Cypress", "K6", "Test NG"], elem_classes='custom-dropdown')
+                            model_structure_final = gr.Json(visible=False) 
+                            swagger_result = gr.Json(visible=False)
+                            swagger_json = gr.Json(visible=False)
+                            api_additional_inputs = gr.Textbox(label="Additional Inputs: ", lines=3, elem_classes="custom-textbox")
+                        with gr.Column(min_width=0, scale=1): pass
 
                     with gr.Row():
                         with gr.Column(min_width=0, scale=3): pass
@@ -337,7 +341,7 @@ def home_page():
                                                     inputs=[all_endpoints, api_additional_inputs, api_test_framework, model_structure_final, swagger_result, swagger_json ],
                                                     outputs=[api_endpoint_selection_page, api_api_result_page])
                     
-                with gr.Column(min_width=0): pass 
+                with gr.Column(min_width=0, scale=1): pass 
 
             with gr.Row(visible=True) as api_testing_home_screen:
                 with gr.Column(min_width=0): pass
