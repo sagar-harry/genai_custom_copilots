@@ -1,0 +1,9 @@
+flask
+openai
+google-generativeai
+grpcio==1.69.0
+replicate
+langchain_google_genai
+langchain_openai
+glom
+html2text
