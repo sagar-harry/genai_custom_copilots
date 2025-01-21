@@ -1,25 +1,21 @@
-First time setup:
+**First Time Setup:**  
+```bash
 python -m venv genai_venv
 cd genai_venv/Scripts
 activate
-cd ..
-cd ..
+cd ../..
 pip install -r requirements.txt
 python main.py
-
-<br>
-<br>
+```
 
 
-Normal run:
+**Normal Run:**  
+```bash
 cd genai_venv/Scripts
 activate
-cd ..
-cd ..
+cd ../..
 python main.py
-
-<br>
-<br>
+```
 
 # Simplified Documentation for API Endpoints
 
