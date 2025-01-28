@@ -15,6 +15,7 @@ from jinja2 import Template
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 import html2text
 import configparser
+from groq import Groq
 
 
 _logger = logging.getLogger(__name__)
@@ -27,6 +28,7 @@ llm_model = config.get(section, 'llm_model')
 openai_key = config.get(section, 'openai_key')
 gemini_key = config.get(section, 'gemini_key')
 llama2_key = config.get(section, 'llama2_key')
+groq_api_key = config.get(section, 'groq_key')
 
 
 max_tokens = int(os.environ.get('OPENAI_MAX_TOKENS', '4000'))
@@ -75,20 +77,22 @@ def gemini_response(prompt):
 
 
 def generate_resp_from_llm(prompt):
-    if llm_model == 'LLAMA2':
-        output = replicate.run(
-            "replicate/llama-7b:ac808388e2e9d8ed35a5bf2eaa7d83f0ad53f9e3df31a42e4eb0a0c3249b3165",
-            input={
-                "debug": False,
-                "top_p": 0.95,
-                "prompt": prompt,
-                "max_length": 500,
-                "temperature": 0.8,
-                "repetition_penalty": 1
-            }
+    if llm_model == 'LLAMA':
+        client = Groq(
+                api_key= groq_api_key,
+            )
+        
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+            model="llama3-70b-8192",
         )
 
-        return "".join(output)
+        return chat_completion.choices[0].message.content
 
     elif llm_model == 'Gemini':
 
@@ -213,16 +217,3 @@ def process_json(uploaded_file):
 def get_generated_api_test_code(prompt):
     resp = generate_resp_from_llm(prompt=prompt)
     return resp
-
-
-# def main():
-#     json_read = process_json(None)
-#     api_endpoint_choices = []
-#     model_structure_final, swagger_result = process_swagger_json(json_read)
-#     selected_api_endpoint_choices = []
-
-#     selected_prompt_messages = render_template(api_endpoint_choices)
-
-
-# if __name__ == "__main__":
-#     main()

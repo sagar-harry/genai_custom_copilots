@@ -2,6 +2,8 @@ import os
 from openai import OpenAI
 import google.generativeai as genai
 import configparser
+from groq import Groq
+
 
 config = configparser.ConfigParser()
 config.read('config.conf')
@@ -10,25 +12,26 @@ section = 'LLM'
 llm_model = config.get(section, 'llm_model')
 openai_key = config.get(section, 'openai_key')
 gemini_key = config.get(section, 'gemini_key')
+groq_api_key = config.get('LLM', 'groq_key')
 
 
 def generate_resp_from_llm(model, prompt):
-    f = open('prompt.txt','w')
-    f.write(prompt)
-    f.close()
     if model == 'LLAMA2':
-        output = replicate.run(
-            "replicate/llama-7b:ac808388e2e9d8ed35a5bf2eaa7d83f0ad53f9e3df31a42e4eb0a0c3249b3165",
-            input={
-                "debug": False,
-                "top_p": 0.95,
-                "prompt": prompt,
-                "max_length": 500,
-                "temperature": 0.8,
-                "repetition_penalty": 1
-            }
+        client = Groq(
+                api_key= groq_api_key,
+            )
+        
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+            model="llama3-70b-8192",
         )
-        return "".join(output)
+
+        return chat_completion.choices[0].message.content
 
     elif model == 'Gemini':
         return gemini_responsee(prompt)
@@ -77,7 +80,7 @@ def gpt_response(prompt):
 
 def main(acceptance_criteria, locator, ui_test_framework, prog_language, additional_details):
     prompt_template = f"""
-    Generate detailed test cases for a UI test scenario. Here are the inputs:
+    Generate detailed test cases code for a UI test scenario. Here are the inputs:
     1. Acceptance Criteria: f{acceptance_criteria}
     2. Locator: f{locator}
     3. UI Test Framework: f{ui_test_framework}
